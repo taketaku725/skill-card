@@ -30,6 +30,8 @@ document.getElementById("add").onclick = () => {
 
   if (!skillData.cards[inputBuffer]) {
     showToast("存在しない番号です");
+    inputBuffer = "";
+    display.textContent = "--";
     return;
   }
 
