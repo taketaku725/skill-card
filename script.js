@@ -7,11 +7,44 @@ const display = document.getElementById("display");
 const hand = document.getElementById("hand");
 const toast = document.getElementById("toast");
 
+const glossaryData = {
+  casino: `
+  <p>先：ダイスを振る前に使用可能</p>
+  <p>後：ダイスを振った後使用可能</p>
+  <p>常：どのタイミングでも使用可能</p>
+  <p>自：自ターン時どのタイミングでも使用可能</p>
+  <p>貫：いかなる回避も貫通する攻撃</p>
+  <p>御：条件下でいかなる攻撃も防げる</p>
+  <p>反：特定の条件下で攻撃を反射する</p>
+  <p>硬：硬質化、カード使用時チップを1枚得る<br/>　　硬質化が解かれた場合カードが消滅<br/></p>
+  <p>空間：飲み部屋を指す</p>
+  <p>場：ゲームプレイしている場所を指す</p>
+  <p>スキルカード：ゲームを有利に進められるカード<br/>※所持上限3枚</p>
+  <p>サポートコイン：スキルカードの能力や進化を促すチップ<br/>※所持上限5枚</p>
+  `,
+  sugoroku: `
+  <p>先：ダイスを振る前に使用可能</p>
+  <p>後：ダイスを振った後使用可能</p>
+  <p>常：どのタイミングでも使用可能</p>
+  <p>自：自ターン時どのタイミングでも使用可能</p>
+  <p>貫：いかなる回避も貫通する攻撃</p>
+  <p>御：死マス(赤文字マス)を防げる</p>
+  <p>反：特定の条件下で攻撃を反射する</p>
+  <p>硬：硬質化、カード使用時チップを1枚得る<br/>　　硬質化が解かれた場合カードが消滅<br/></p>
+  <p>空間：飲み部屋を指す</p>
+  <p>場：ゲームプレイしている場所を指す</p>
+  <p>スキルカード：ゲームを有利に進められるカード<br/>※所持上限3枚</p>
+  <p>サポートコイン：スキルカードの能力や進化を促すチップ<br/>※所持上限5枚</p>
+  `
+};
+
 fetch("skills.json")
   .then(res => res.json())
   .then(data => {
     skillData = data;
   });
+
+updateGlossary();
 
 document.querySelectorAll(".num").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -88,6 +121,8 @@ document.querySelectorAll(".game-btn").forEach(btn => {
       .forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
     currentGame = btn.dataset.game;
+
+    updateGlossary();
   });
 });
 
@@ -95,4 +130,9 @@ function showToast(message) {
   toast.textContent = message;
   toast.classList.add("show");
   setTimeout(() => toast.classList.remove("show"), 1500);
+}
+
+function updateGlossary() {
+  document.getElementById("glossaryContent").innerHTML =
+    glossaryData[currentGame];
 }
