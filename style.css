@@ -123,6 +123,10 @@ body {
   width: 80%;
 }
 
+#popupEffect {
+  white-space: pre-line;
+}
+
 .hidden {
   display: none;
 }
