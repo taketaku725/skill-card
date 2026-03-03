@@ -1,19 +1,17 @@
 let currentGame = "casino";
 let inputBuffer = "";
-
-const skillData = {
-  casino: {
-    "1": { name: "ダブルベット", effect: "次の賭け金を2倍にできる。" },
-    "2": { name: "イカサマ", effect: "一度だけ出目を変更できる。" }
-  },
-  sugoroku: {
-    "1": { name: "ダッシュ", effect: "サイコロをもう一度振れる。" },
-    "2": { name: "ワープ", effect: "好きなマスに移動できる。" }
-  }
-};
+let skillData = {};
+let ownedCards = new Set();
 
 const display = document.getElementById("display");
 const hand = document.getElementById("hand");
+const toast = document.getElementById("toast");
+
+fetch("skills.json")
+  .then(res => res.json())
+  .then(data => {
+    skillData = data;
+  });
 
 document.querySelectorAll(".num").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -22,38 +20,56 @@ document.querySelectorAll(".num").forEach(btn => {
   });
 });
 
-document.getElementById("clear").addEventListener("click", () => {
+document.getElementById("clear").onclick = () => {
   inputBuffer = "";
   display.textContent = "--";
-});
+};
 
-document.getElementById("add").addEventListener("click", () => {
+document.getElementById("add").onclick = () => {
   if (!inputBuffer) return;
-  const skill = skillData[currentGame][inputBuffer];
-  if (!skill) {
-    alert("存在しない番号です");
+
+  if (!skillData.cards[inputBuffer]) {
+    showToast("存在しない番号です");
     return;
   }
-  addCard(inputBuffer, skill);
+
+  if (ownedCards.has(inputBuffer)) {
+    showToast("既に持っています");
+    inputBuffer = "";
+    display.textContent = "--";
+    return;
+  }
+
+  addCard(inputBuffer);
+  ownedCards.add(inputBuffer);
+
   inputBuffer = "";
   display.textContent = "--";
-});
+};
 
-function addCard(id, skill) {
+function addCard(id) {
   const card = document.createElement("div");
   card.className = "card";
+  card.dataset.id = id;
 
   card.innerHTML = `
     <button class="remove-btn">×</button>
-    <h3>${skill.name}</h3>
+    <h3>${skillData.cards[id].name}</h3>
   `;
 
-  card.querySelector(".remove-btn").onclick = () => card.remove();
+  card.querySelector(".remove-btn").onclick = (e) => {
+    e.stopPropagation();
+    ownedCards.delete(id);
+    card.remove();
+  };
 
-  card.onclick = (e) => {
-    if (e.target.classList.contains("remove-btn")) return;
-    document.getElementById("popupTitle").textContent = skill.name;
-    document.getElementById("popupEffect").textContent = skill.effect;
+  card.onclick = () => {
+    document.getElementById("popupTitle").textContent =
+      skillData.cards[id].name;
+
+    document.getElementById("popupEffect").textContent =
+      skillData.effects[currentGame][id] || "効果未設定";
+
     document.getElementById("popup").classList.remove("hidden");
   };
 
@@ -66,9 +82,15 @@ document.getElementById("closePopup").onclick = () => {
 
 document.querySelectorAll(".game-btn").forEach(btn => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll(".game-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".game-btn")
+      .forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
     currentGame = btn.dataset.game;
-    hand.innerHTML = "";
   });
 });
+
+function showToast(message) {
+  toast.textContent = message;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 1500);
+}
