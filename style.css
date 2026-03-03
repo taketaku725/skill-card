@@ -159,7 +159,7 @@ body {
   padding: 20px;
   border-radius: 12px;
   width: 85%;
-  max-height: 80vh;
+  max-height: 60vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
