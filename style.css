@@ -27,6 +27,10 @@ body {
   background: #ffffff;
 }
 
+body.modal-open {
+  overflow: hidden;
+}
+
 .container {
   padding: 15px;
 }
