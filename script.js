@@ -106,6 +106,7 @@ function addCard(id) {
       skillData.effects[currentGame][id] || "効果未設定";
 
     document.getElementById("popup").classList.remove("hidden");
+    document.body.classList.add("modal-open");
   };
 
   hand.appendChild(card);
@@ -113,6 +114,7 @@ function addCard(id) {
 
 document.getElementById("closePopup").onclick = () => {
   document.getElementById("popup").classList.add("hidden");
+  document.body.classList.remove("modal-open");
 };
 
 document.querySelectorAll(".game-btn").forEach(btn => {
