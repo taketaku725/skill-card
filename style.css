@@ -39,13 +39,13 @@ body.modal-open {
   display: flex;
   gap: 10px;
   margin-bottom: 15px;
-  border: non;
+  border: none;
 }
 
 .game-btn {
   flex: 1;
   padding: 10px;
-  border: non;
+  border: none;
   background: #ccc;
   color: #333;
   border-radius: 8px;
